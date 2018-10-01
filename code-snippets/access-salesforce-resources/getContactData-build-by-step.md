@@ -103,48 +103,47 @@ Start with the basics.
 ```json
 ({
 	getContacts : function(component, event, helper) {
-        var action = component.get("c.getContactListConFun");
-        
-        action.setCallback(this, function(response){
-			var state=response.getState();
-            if (state === "SUCCESS"){
-                component.set("v.contactList", response.getReturnValue());
-            }
-        	else if (state ==="ERROR"){
-            	console.log("Error: " + response.getError());
-        	}
-        })
-    	$A.enqueueAction(action);
+	var action = component.get("c.getContactListConFun");
+	action.setCallback(this, function(response){
+		var state=response.getState();
+		if (state === "SUCCESS"){
+			component.set("v.contactList", response.getReturnValue());
+		}
+		else if (state ==="ERROR"){
+		console.log("Error: " + response.getError());
+		}
+	})
+	$A.enqueueAction(action);
+	},  
+	
+	// data table functions  
+	init: function (component, event, helper) {
+	component.set('v.columns', [
+		{label: 'Id', fieldName: 'contactId', type: 'text'},
+		{label: 'First name', fieldName: 'firstName', type: 'text'},
+		{label: 'First name', fieldName: 'lastName', type: 'text'},
+		{label: 'Birthdate', fieldName: 'birthDate', type: 'date'},
+		{label: 'Email', fieldName: 'contact', type: 'email'},
+		{label: 'Phone', fieldName: 'phone', type: 'phone'},
+		{label: 'Address', fieldName: 'mailingAddress', type: 'location'}
+	]);
 	},
     
-    // data table functions  
-    init: function (component, event, helper) {
-		component.set('v.columns', [
-			{label: 'Id', fieldName: 'contactId', type: 'text'},
-        	{label: 'First name', fieldName: 'firstName', type: 'text'},
-            {label: 'First name', fieldName: 'lastName', type: 'text'},
-        	{label: 'Birthdate', fieldName: 'birthDate', type: 'date'},
-            {label: 'Email', fieldName: 'contact', type: 'email'},
-            {label: 'Phone', fieldName: 'phone', type: 'phone'},
-            {label: 'Address', fieldName: 'mailingAddress', type: 'location'}
-        ]);
-    },
-    
 	updateSelectedText: function (component, event) {
-        var selectedRows = event.getParam('selectedRows');
-        component.set('v.selectedRowsCount', selectedRows.length);
-    },
+		var selectedRows = event.getParam('selectedRows');
+		component.set('v.selectedRowsCount', selectedRows.length);
+	},  
+	
+	handleInputChange: function (component, event, helper) {
+		var value = event.getSource().get('v.value');
+		var maxRowSelection = component.get('v.maxRowSelection');
+		component.set('v.isButtonDisabled', helper.getButtonState(value, maxRowSelection));
+	},
     
-    handleInputChange: function (component, event, helper) {
-        var value = event.getSource().get('v.value');
-        var maxRowSelection = component.get('v.maxRowSelection');
-        component.set('v.isButtonDisabled', helper.getButtonState(value, maxRowSelection));
-    },
-    
-    updateMaxRowSelection: function (component) {
-        component.set('v.maxRowSelection', component.get('v.privateMaxRowSelection'));
-        component.set('v.isButtonDisabled', true);
-    }
+	updateMaxRowSelection: function (component) {
+		component.set('v.maxRowSelection', component.get('v.privateMaxRowSelection'));
+		component.set('v.isButtonDisabled', true);
+	}
 })
 ```
 
